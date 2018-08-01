@@ -62,7 +62,7 @@ int main() {
 
 ### 2. move zeros
 
-![1](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\1.png)
+![1](./pics/1.png)
 
 这个题目有好几个思路：
 
@@ -212,7 +212,7 @@ int main() {
 
 ### Sort colors
 
-![2](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\2.png)
+![2](./pics/2.png)
 
 看到这个题目，如果没有思路，可以直接使用常规的排序方法。
 
@@ -281,7 +281,7 @@ int main() {
 
 Two sum
 
-![3](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\3.png)
+![3](./pics/3.png)
 
 注意条件：1. 有序。2. 返回两个元素。
 
@@ -289,23 +289,23 @@ Two sum
 
 思路2：考虑到数组是有序的，对i个元素，剩下元素通过二分查找。O(nlogn)
 
-![4](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\4.png)
+![4](./pics/4.png)
 
 思路3：由于有序，考虑使用指针对撞的方法。O(n)
 
 其他的题目：
 
-![5](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\5.png)
+![5](./pics/5.png)
 
-![6](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\6.png)
+![6](./pics/6.png)
 
-![7](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\7.png)
+![7](./pics/7.png)
 
-![8](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\8.png)
+![8](./pics/8.png)
 
 ## 滑动窗口
 
-![9](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\9.png)
+![9](./pics/9.png)
 
 
 
@@ -334,7 +334,7 @@ set和map的常见操作包括：
 
 ### 3. 面试题：Intersection of two arrays
 
-![10](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\10.png)
+![10](./pics/10.png)
 
 使用set解决：
 
@@ -458,9 +458,214 @@ int main() {
 
 ### 4. 面试题：Intersection of two arrays II
 
-需要特别的注意，在c++中，map的值默认情况下是0？所以要特别注意这一点。否则很可能会出错。
+需要特别的注意，在c++中，在C++中, map的key一旦被访问（myMap[42]，这样叫访问）过, 就会添加默认的(key, value)对在map中!
+
+~~~c++
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+int main() {
+
+    map<int,int> myMap;
+    if(myMap.find(42) == myMap.end())
+        cout << "Can not find element 42" << endl;
+    else
+        cout << "Element 42 is in the map" << endl;
+
+    cout << myMap[42] << endl; // 输出 0
+
+    // 注意: 在C++中, map的key一旦被访问过, 就会添加默认的(key, value)对在map中!
+    // 以下代码将找到42, 因为之前使用myMap[42]的方式对42进行了访问!
+    if(myMap.find(42) == myMap.end())
+        cout << "Can not find element 42" << endl;
+    else
+        cout << "Element 42 is in the map" << endl;
+
+    myMap[42] ++;
+    cout << myMap[42] << endl; // 输出 1
+    if(myMap.find(42) == myMap.end())
+        cout << "Can not find element 42" << endl;
+    else
+        cout << "Element 42 is in the map" << endl;
+
+    myMap[42] --;
+    cout << myMap[42] << endl; // 输出 0
+
+    // 注意: key对应的值为0, 不代表key不存在
+    if(myMap.find(42) == myMap.end())
+        cout << "Can not find element 42" << endl;
+    else
+        cout << "Element 42 is in the map" << endl;
+
+    // 使用erase删除一个key
+    myMap.erase(42);
+    if(myMap.find(42) == myMap.end())
+        cout << "Can not find element 42" << endl;
+    else
+        cout << "Element 42 is in the map" << endl;
+
+    return 0;
+}
+~~~
+
+使用vector解决：遍历vec1，查找vec2中是否有这个元素，有就push到一个新的vec中。这种做法是错误的，因为查找的那个vec必须只能含有独立元素。
 
 使用map解决：
+
+思路：将nums1数组放入map中，计数。然后遍历nums2，查找map中相应的值是否>0，是的话，将这个元素push到一个vector，相应的值减1，否则不push。
+
+~~~c++
+#include <iostream>
+#include <vector>
+#include <map>
+
+using namespace std;
+
+// 350. Intersection of Two Arrays II
+// https://leetcode.com/problems/intersection-of-two-arrays-ii/description/
+// 时间复杂度: O(nlogn)
+// 空间复杂度: O(n)
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+
+        map<int, int> record;
+        for(int i = 0 ; i < nums1.size() ; i ++)
+            record[nums1[i]] += 1;
+        vector<int> resultVector;
+        for(int i = 0 ; i < nums2.size() ; i ++)
+            if(record[nums2[i]] > 0){
+                resultVector.push_back(nums2[i]);
+                record[nums2[i]] --;
+            }
+        return resultVector;
+    }
+};
+
+int main() {
+
+    int nums1[] = {1, 2, 2, 1};
+    vector<int> vec1(nums1, nums1 + sizeof(nums1)/sizeof(int));
+
+    int nums2[] = {2, 2};
+    vector<int> vec2(nums2, nums2 + sizeof(nums2)/sizeof(int));
+
+    vector<int> res = Solution().intersect(vec1, vec2);
+    for(int i = 0 ; i < res.size() ; i ++)
+        cout << res[i] << " ";
+    cout << endl;
+    return 0;
+}
+~~~
+
+注意，以上方法存在一个问题，就是键访问过后，相应的值就为0。因此可以进行改良。
+
+~~~c++
+pass
+~~~
+
+还有multiset
+
+~~~c++
+pass
+~~~
+
+因为以上问题都是无序的问题，因此可以考虑使用unorder_set或者unorder_map，这样时间复杂度会降低很多。
+
+~~~c++
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+using namespace std;
+
+// 349. Intersection of Two Arrays
+// https://leetcode.com/problems/intersection-of-two-arrays/description/
+// 时间复杂度: O(len(nums1)+len(nums2))
+// 空间复杂度: O(len(nums1))
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+
+        unordered_set<int> record(nums1.begin(), nums1.end());
+
+        unordered_set<int> resultSet;
+        for(int i = 0; i < nums2.size(); i ++ )
+            if(record.find(nums2[i]) != record.end())
+                resultSet.insert(nums2[i]);
+
+        return vector<int>(resultSet.begin(), resultSet.end());
+    }
+};
+
+int main() {
+
+    int nums1[] = {1, 2, 2, 1};
+    vector<int> vec1(nums1, nums1 + sizeof(nums1)/sizeof(int));
+
+    int nums2[] = {2, 2};
+    vector<int> vec2(nums2, nums2 + sizeof(nums2)/sizeof(int));
+
+    vector<int> res = Solution().intersection(vec1, vec2);
+    for(int i = 0 ; i < res.size() ; i ++ )
+        cout << res[i] << " ";
+    cout << endl;
+
+    return 0;
+}
+~~~
+
+
+
+~~~c++
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+// 350. Intersection of Two Arrays II
+// https://leetcode.com/problems/intersection-of-two-arrays-ii/description/
+// 时间复杂度: O(len(nums1)+len(nums2))
+// 空间复杂度: O(len(nums1))
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+
+        unordered_map<int, int> record;
+        for( int i = 0 ; i < nums1.size() ; i ++ )
+            record[nums1[i]] += 1;
+
+        vector<int> resultVector;
+        for(int i = 0; i < nums2.size(); i ++)
+            if(record[ nums2[i] ] > 0){
+                resultVector.push_back(nums2[i]);
+                record[nums2[i]] --;
+            }
+
+        return resultVector;
+    }
+};
+
+int main() {
+
+    int nums1[] = {1, 2, 2, 1};
+    vector<int> vec1(nums1, nums1 + sizeof(nums1)/sizeof(int));
+
+    int nums2[] = {2, 2};
+    vector<int> vec2(nums2, nums2 + sizeof(nums2)/sizeof(int));
+
+    vector<int> res = Solution().intersect(vec1, vec2);
+    for(int i = 0; i < res.size(); i ++)
+        cout << res[i] << " ";
+    cout << endl;
+
+    return 0;
+}
+~~~
+
+
 
 
 
@@ -474,29 +679,29 @@ int main() {
 
 哈希表：哈希表的插入查找删除的时间复杂度都是O(1)，但是哈希表的缺点是没有顺序。
 
-![11](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\11.png)
+![11](./pics/11.png)
 
 数据的顺序性有很多好处：
 
-![12](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\12.png)
+![12](./pics/12.png)
 
 其他面试题
 
-![15](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\15.png)
+![15](./pics/15.png)
 
-![16](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\16.png)
+![16](./pics/16.png)
 
-![17](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\17.png)
+![17](./pics/17.png)
 
-![18](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\18.png)
+![18](./pics/18.png)
 
-![19](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\19.png)
+![19](./pics/19.png)
 
-![20](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\20.png)
+![20](./pics/20.png)
 
-![21](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\21.png)
+![21](./pics/21.png)
 
-![22](E:\leetcode\Play-with-Algorithm-Interview\Note\part1\pics\22.png)
+![22](./pics/22.png)
 
 
 
