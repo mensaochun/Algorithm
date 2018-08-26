@@ -26,6 +26,7 @@ public:
         // 扫描freq,维护当前出现频率最高的k个元素
         // 在优先队列中,按照频率排序,所以数据对是 (频率,元素) 的形式
         priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+		// 遍历的时间复杂度是n，加入优先队列是logk,总的是nlogk
         for(unordered_map<int,int>::iterator iter = freq.begin();
              iter != freq.end(); iter ++ ){
             if(pq.size() == k){
